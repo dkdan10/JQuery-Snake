@@ -14,7 +14,6 @@ export default class AIPlayer {
             }
         }
         if (head[1] === 18 && head[0] !== 0 && head[0] !== 19) {
-            console.log(this.lastPos[0], head[0])
             if (this.lastPos[0] === head[0]) {
                 this.board.snake.turn("E");
             } else {

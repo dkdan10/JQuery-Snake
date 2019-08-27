@@ -22,7 +22,6 @@ export default class Snake{
   }
 
   move () {
-    console.log(this.hasMovedThisFrame)
     const head = this.head()
     switch (directions.indexOf(this.direction)) {
       case 0:
