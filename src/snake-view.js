@@ -82,13 +82,13 @@ export default class SnakeView {
     $(document).keydown(e => {
       if (e.keyCode === 38) {
         this.board.snake.turn("N")
-      } else if (e.keyCode === 39) {
+      } else if (e.keyCode === 39 && this.aiPlayer.board !== this.board) {
         this.board.snake.turn("E")
-      } else if (e.keyCode === 40) {
+      } else if (e.keyCode === 40 && this.aiPlayer.board !== this.board) {
         this.board.snake.turn("S")
-      } else if (e.keyCode === 37) {
+      } else if (e.keyCode === 37 && this.aiPlayer.board !== this.board) {
         this.board.snake.turn("W")
-      } else if (e.keyCode === 32) {
+      } else if (e.keyCode === 32 ) {
         if (this.over) {
           this.board = new Board();
           this.over = false
