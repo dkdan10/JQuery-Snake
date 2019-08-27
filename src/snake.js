@@ -1,9 +1,5 @@
 const directions = ["N", "S", "E", "W"]
 
-function plus(arr1, arr2) {
-  return [arr1[0] + arr2[0], arr1[1] + arr2[1]]
-}
-
 function oppositeDir(dir1, dir2) {
   return (
     dir1 === "N" && dir2 === "S" ||
@@ -18,6 +14,7 @@ export default class Snake{
     this.direction = "N";
     this.segments = [ [0,19] ];
     this.growTurn = 0;
+    this.hasMovedThisFrame = false;
   }
 
   head () {
@@ -25,6 +22,7 @@ export default class Snake{
   }
 
   move () {
+    console.log(this.hasMovedThisFrame)
     const head = this.head()
     switch (directions.indexOf(this.direction)) {
       case 0:
@@ -48,12 +46,14 @@ export default class Snake{
     } else {
       this.segments.shift();
     }
+    this.hasMovedThisFrame = false;
   }
 
   turn (newDir) {
-    if (directions.indexOf(newDir) !== -1) {
+    if (directions.indexOf(newDir) !== -1 && !this.hasMovedThisFrame) {
       if (!oppositeDir(this.direction, newDir))
       this.direction = newDir
+      this.hasMovedThisFrame = true;
     }
   }
 }

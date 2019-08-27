@@ -1,4 +1,5 @@
 import Board from "./board";
+import AIPlayer from "./ai-player";
 
 function equals(arr1, arr2) {
   return (arr1[0] === arr2[0] && arr1[1] === arr2[1])
@@ -8,22 +9,24 @@ export default class SnakeView {
   constructor($el) {
     this.$el = $el;
     this.board = new Board();
+    this.aiPlayer = new AIPlayer(this.board)
     this.setupKeyBinds();
     this.gameInterval = setInterval(() => {
       this.step()
-    }, 100);
+    }, 0.1);
+    this.over = false;
   }
 
   step () {
+    this.aiPlayer.makeMove()
     this.board.snake.move();
     this.$el.empty();
     this.render();
   }
 
   render () {
-    let over = false
     if (this.board.snake.segments.some(seg => seg[0] > 19 || seg[0] < 0 || seg[1] > 19 || seg[1] < 0)) {
-      over = true
+      this.over = true
     }
     for (let i = 0; i < 20; i++) {
       const $ul = $('<ul>')
@@ -34,7 +37,7 @@ export default class SnakeView {
         if (snakesAtPos.length === 1) {
           $li.addClass('snake-body')
         } else if (snakesAtPos.length > 1) {
-          over = true
+          this.over = true
         }
         if (equals(this.board.apple, [j,i])) {
           // if snake is at apple
@@ -49,7 +52,7 @@ export default class SnakeView {
       }
       this.$el.append($ul)
     }
-    if (over) this.gameOver()
+    if (this.over) this.gameOver()
   }
 
   gameOver() {
@@ -73,10 +76,13 @@ export default class SnakeView {
       } else if (e.keyCode === 37) {
         this.board.snake.turn("W")
       } else if (e.keyCode === 32) {
-        this.board = new Board();
-        this.gameInterval = setInterval(() => {
-          this.step()
-        }, 100);
+        if (this.over) {
+          this.board = new Board();
+          this.over = false
+          this.gameInterval = setInterval(() => {
+            this.step()
+          }, 100);
+        }
       }
     })
   }
