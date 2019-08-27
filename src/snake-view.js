@@ -6,8 +6,9 @@ function equals(arr1, arr2) {
 }
 
 export default class SnakeView {
-  constructor($el) {
+  constructor($el, $extraTextDiv) {
     this.$el = $el;
+    this.$extraTextDiv = $extraTextDiv
     this.board = new Board();
     this.aiPlayer = new AIPlayer(this.board)
     this.setupKeyBinds();
@@ -21,6 +22,7 @@ export default class SnakeView {
     this.aiPlayer.makeMove()
     this.board.snake.move();
     this.$el.empty();
+    this.$extraTextDiv.empty();
     this.render();
   }
 
@@ -52,17 +54,28 @@ export default class SnakeView {
       }
       this.$el.append($ul)
     }
+    if (this.aiPlayer.board === this.board && !this.over) this.printAiPlayer()
     if (this.over) this.gameOver()
   }
 
+  printAiPlayer() {
+    const $h1 = $('<h2>')
+    $h1.text("AI Player Playing")
+    const $h2 = $('<h1>')
+    $h2.text("Press Space to Play")
+    this.$extraTextDiv.append($h1)
+    this.$extraTextDiv.append($h2)
+  }
+
   gameOver() {
+    // this.$extraTextDiv.empty()
     window.clearInterval(this.gameInterval);
     const $h1 = $('<h2>')
     $h1.text("You Lose")
     const $h2 = $('<h1>')
     $h2.text("Press Space to Restart")
-    this.$el.append($h1)
-    this.$el.append($h2)
+    this.$extraTextDiv.append($h1)
+    this.$extraTextDiv.append($h2)
   }
 
   setupKeyBinds() {
@@ -79,6 +92,13 @@ export default class SnakeView {
         if (this.over) {
           this.board = new Board();
           this.over = false
+          this.gameInterval = setInterval(() => {
+            this.step()
+          }, 100);
+        } else if (this.aiPlayer.board === this.board) {
+          this.board = new Board();
+          this.over = false
+          window.clearInterval(this.gameInterval)
           this.gameInterval = setInterval(() => {
             this.step()
           }, 100);
